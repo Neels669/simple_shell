@@ -12,8 +12,9 @@
 #include <fcntl.h>
 #include <errno.h>
 
-//String Functions
-int _putchar(char c); //Prints char
-void printString(const char *str); //prints string
+#define BUFFER_SIZE 1024
+
+int _putchar(char c);
+void printString(const char *str);
 
 #endif
