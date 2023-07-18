@@ -26,3 +26,26 @@ void printString(const char *str)
 		str++;
 	}
 }
+
+/**
+ * printUnsigned - Convert string
+ * @num: Integer to be converted
+ *
+ * Return: void
+ *
+ */
+void printUnsigned(unsigned int num)
+{
+	char num_str[20];
+	int i = 0;
+
+	do {
+		num_str[i++] = '0' + (num % 10);
+		num /= 10;
+	} while (num > 0);
+
+	for (int j = i - 1; j >= 0; j--)
+	{
+		_putchar(num_str[j]);
+	}
+}
