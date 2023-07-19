@@ -1,16 +1,16 @@
 #include "shell.h"
 
 /**
- * main - PPID
+ * show_ppid - PPID
  *
  * Return: Always 0.
  */
-int main(void)
+int show_ppid(void)
 {
 	pid_t my_pid;
 
 	my_pid = getppid();
-	printUnsigned(my_pid);
+	printSigned(my_pid);
 	printString("\n");
 
 	return (0);

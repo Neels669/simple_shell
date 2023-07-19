@@ -38,14 +38,35 @@ void printUnsigned(unsigned int num)
 {
 	char num_str[20];
 	int i = 0;
+	int j;
 
 	do {
 		num_str[i++] = '0' + (num % 10);
 		num /= 10;
 	} while (num > 0);
 
-	for (int j = i - 1; j >= 0; j--)
+	for (j = i - 1; j >= 0; j--)
 	{
 		_putchar(num_str[j]);
 	}
+}
+
+/**
+ * printSigned - Signed integer
+ * @num: Integer
+ *
+ * Return: int
+ */
+void printSigned(int num)
+{
+	if (num < 0)
+	{
+		_putchar('-');
+		num = -num;
+	}
+	if (num >= 10)
+	{
+		printSigned(num / 10);
+	}
+	_putchar('0' + (num % 10));
 }

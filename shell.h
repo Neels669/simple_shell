@@ -17,5 +17,6 @@
 int _putchar(char c);
 void printString(const char *str);
 void printUnsigned(unsigned int num);
+void printSigned(int num);
 
 #endif
