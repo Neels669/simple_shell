@@ -102,14 +102,15 @@ int main(int ac, char **av, char **envp)
 		token = strtok(buffer, delimiters);
 		while (token != NULL)
 		{
-			args[arg_index] = token;
-			arg_index++;
-
+			if (my_strlen(token) > 0)
+			{
+				args[arg_index] = token;
+				arg_index++;
+			}
 			token = strtok(NULL, delimiters);
 		}
 		args[arg_index] = NULL;
-
-		if (strcmp(args[0], "exit") == 0)
+		if (my_strcmp(args[0], "exit") == 0)
 		{
 			_EOF(-1, buffer);
 		}
