@@ -25,4 +25,12 @@ size_t my_strlen(const char *str);
 
 int execute_command(char **args, char **envp);
 
+/*
+ * struct builtin - contains a builtin string and related function
+ * @name: builtin name
+ */
+const char *name;
+builtin_handler handler;
+} builtin_command;
+
 #endif

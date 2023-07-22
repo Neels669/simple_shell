@@ -1,39 +1,21 @@
 #include "shell.h"
 
-/**
- * my_strcmp - Function for string comparison
- * @str1: First string pointer
- * @str2: Second string pointer
- *
- * Return: strcmp
- */
-int my_strcmp(const char *str1, const char *str2)
+int builtin_echo(char **args, char **envp)
 {
-	while (*str1 && *str2)
+	for (int i = 1; args[i] != NULL; i++)
 	{
-		if (*str1 != *str2)
-		{
-			return (*str1 - *str2);
-		}
-		str1++;
-		str2++;
+		printString(args[i]);
+		if (args[i + 1] != NULL)
+			printString(" ");
 	}
-	return (*str1 - *str2);
+	printString("\n");
+	return (0);
 }
 
-/**
- * my_strlen - Function for length of string
- * @str: pointer to string
- *
- * Return: length
- */
-size_t my_strlen(const char *str)
+typedef int (*builtin_handler)(char **args, char **envp);
 {
-	size_t length = 0;
-
-	while (str[length] != '\0')
-	{
-		length++;
-	}
-	return (length);
+	builtin_command builtin_commands[] = {
+		{"echo", builtin_echo},
+		{NULL, NULL},
+	};
 }
