@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <stddef.h>
+#include <dirent.h>
 
 #define BUFFER_SIZE 1024
 
@@ -22,15 +23,8 @@ void printSigned(int num);
 
 int my_strcmp(const char *str1, const char *str2);
 size_t my_strlen(const char *str);
-
-int execute_command(char **args, char **envp);
-
-/*
- * struct builtin - contains a builtin string and related function
- * @name: builtin name
- */
-const char *name;
-builtin_handler handler;
-} builtin_command;
+char *my_strdup(const char *str);
+char *my_strcpy(char *dest, const char *src);
+char *my_strcat(char *dest, const char *src);
 
 #endif
