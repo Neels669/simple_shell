@@ -37,16 +37,70 @@ void _EOF(int len, char *buff)
 }
 
 /**
- * execute_command - Execve, wait and fork
- * @command_path: path
+ * execute_builtin_command - Execute built-in commands
+ * @args: Array of arguments
+ *
+ * Return: true if a built-in command is executed, false otherwise
+ */
+bool execute_builtin_command(char **args)
+{
+	int i;
+
+	if (args[0] == NULL)
+	{
+		return (true);
+	}
+	else if (my_strcmp(args[0], "cd") == 0)
+	{
+		if (args[1] == NULL)
+		{
+			if (chdir(getenv("HOME")) != 0)
+			{
+				perror("cd");
+			}
+		}
+		else
+		{
+			if (chdir(args[1]) != 0)
+			{
+				perror("cd");
+			}
+		}
+		return (true);
+	}
+	else if (my_strcmp(args[0], "echo") == 0)
+	{
+		for (i = 1; args[i] != NULL; i++)
+		{
+			printString(args[i]);
+		}
+		printString("\n");
+		return (true);
+	}
+	return (false);
+}
+
+/**
+ * execute_command - Executing commands
+ * @args: Pointer to strings
  *
  * Return: 1 on success
  */
 void execute_command(char **args)
 {
 	pid_t child_pid;
+	bool is_builtin;
 
-	if (strcmp(args[0], "exit") == 0)
+	if (args[0] == NULL)
+	{
+		return;
+	}
+	is_builtin = execute_builtin_command(args);
+	if (is_builtin)
+	{
+		return;
+	}
+	if (my_strcmp(args[0], "exit") == 0)
 	{
 		exit(0);
 	}
@@ -73,41 +127,32 @@ void execute_command(char **args)
 
 /**
  * main - Shell start
- * @ac: Count in av
- * @av: Array of strings
- * @envp: NULL terminated array of strings
  *
- * Return: prompt
+ * Return: void
  */
-int main(int ac, char **av)
+int main(void)
 {
 	char *buffer = NULL;
+	char *args[MAX_ARGS];
 	size_t buffer_size = 0;
 	ssize_t line_len = 0;
 	char *token;
 	const char *delimiters = " \t\n";
-	char *args[64];
-	int arg_index = 0;
-
-	(void)ac;
-	(void)av;
+	int i, arg_index = 0;
 
 	signal(SIGINT, command_sign);
-
 	while (1)
 	{
 		printString("($) ");
-
 		line_len = getline(&buffer, &buffer_size, stdin);
 		if (line_len == -1)
 			_EOF(line_len, buffer);
-
 		token = strtok(buffer, delimiters);
 		while (token != NULL)
 		{
 			if (my_strlen(token) > 0)
 			{
-				args[arg_index] = token;
+				args[arg_index] = my_strdup(token);
 				arg_index++;
 			}
 			token = strtok(NULL, delimiters);
@@ -118,7 +163,13 @@ int main(int ac, char **av)
 			_EOF(-1, buffer);
 		}
 		execute_command(args);
+		for (i = 0; i < arg_index; i++)
+		{
+			free(args[i]);
+			args[i] = NULL;
+		}
+		arg_index = 0;
 		free(buffer);
+		buffer = NULL;
 	}
-	return (0);
 }

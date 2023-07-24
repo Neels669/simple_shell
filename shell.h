@@ -8,13 +8,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <signal.h>
+#include <stdbool.h>
 #include <limits.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <stddef.h>
-#include <dirent.h>
 
 #define BUFFER_SIZE 1024
+#define MAX_ARGS 64
 
 int _putchar(char c);
 void printString(const char *str);
