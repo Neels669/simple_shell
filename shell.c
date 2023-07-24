@@ -11,6 +11,7 @@ void command_sign(int sign)
 	if (sign == SIGINT)
 	{
 		printString("\n($) ");
+		fflush(stdout);
 	}
 }
 
@@ -41,13 +42,14 @@ void _EOF(int len, char *buff)
  *
  * Return: 1 on success
  */
-void execute_command(const char *command_path)
+void execute_command(char **args)
 {
 	pid_t child_pid;
-	int status;
-	char *argv[2];
-	argv[0] = (char *)command_path;
-	argv[1] = NULL;
+
+	if (strcmp(args[0], "exit") == 0)
+	{
+		exit(0);
+	}
 
 	child_pid = fork();
 	if (child_pid == -1)
@@ -57,17 +59,15 @@ void execute_command(const char *command_path)
 	}
 	else if (child_pid == 0)
 	{
-		printString(command_path);
-		printString("\n");
-		if (execve(command_path, argv, NULL) == -1)
+		if (execvp(args[0], args) == -1)
 		{
-			perror("Error executing command");
+			perror("execvp error");
 			exit(1);
 		}
 	}
 	else
 	{
-		wait(&status);
+		wait(NULL);
 	}
 }
 
@@ -81,9 +81,6 @@ void execute_command(const char *command_path)
  */
 int main(int ac, char **av)
 {
-	char *ls_dir = "/bin/ls";
-	DIR *dir;
-	struct dirent *entry;
 	char *buffer = NULL;
 	size_t buffer_size = 0;
 	ssize_t line_len = 0;
@@ -120,29 +117,8 @@ int main(int ac, char **av)
 		{
 			_EOF(-1, buffer);
 		}
-		execute_command(args[0]);
+		execute_command(args);
 		free(buffer);
 	}
-	dir = opendir(ls_dir);
-
-	if (dir == NULL)
-	{
-		perror("Error opening directory");
-		return (1);
-	}
-	while ((entry = readdir(dir)) != NULL)
-	{
-		if (entry->d_type == DT_REG)
-		{
-			char command_path[256];
-			printString(ls_dir);
-			printString("\n");
-			my_strcpy(command_path, ls_dir);
-			my_strcat(command_path, "/");
-			my_strcat(command_path, entry->d_name);
-			execute_command(command_path);
-		}
-	}
-	closedir(dir);
 	return (0);
 }
