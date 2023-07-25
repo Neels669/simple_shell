@@ -24,3 +24,20 @@ bool execute_path(const char *path, const char *program, char **args)
 	}
 	return (false);
 }
+
+/**
+ * my_env - Print the current environment variables
+ *
+ * Return: void
+ */
+void my_env(void)
+{
+	char **env = environ;
+
+	while (*env != NULL)
+	{
+		printString(*env);
+		printString("\n");
+		env++;
+	}
+}

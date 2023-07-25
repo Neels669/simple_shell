@@ -37,12 +37,12 @@ void _EOF(int len, char *buff)
 }
 
 /**
- * execute_builtin_command - Execute built-in commands
+ * my_execute - Execute built-in commands
  * @args: Array of arguments
  *
  * Return: true if a built-in command is executed, false otherwise
  */
-bool execute_builtin_command(char **args)
+bool my_execute(char **args)
 {
 	int i;
 
@@ -77,6 +77,11 @@ bool execute_builtin_command(char **args)
 		printString("\n");
 		return (true);
 	}
+	else if (my_strcmp(args[0], "env") == 0)
+	{
+		my_env();
+		return (true);
+	}
 	return (false);
 }
 
@@ -96,7 +101,7 @@ void execute_command(char **args)
 	{
 		return;
 	}
-	is_builtin = execute_builtin_command(args);
+	is_builtin = my_execute(args);
 	if (is_builtin)
 	{
 		return;
