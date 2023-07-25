@@ -90,6 +90,7 @@ void execute_command(char **args)
 {
 	pid_t child_pid;
 	bool is_builtin;
+	int status;
 
 	if (args[0] == NULL)
 	{
@@ -104,7 +105,6 @@ void execute_command(char **args)
 	{
 		exit(0);
 	}
-
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -113,15 +113,32 @@ void execute_command(char **args)
 	}
 	else if (child_pid == 0)
 	{
-		if (execvp(args[0], args) == -1)
+		const char *path = my_getenv("PATH");
+
+		if (path != NULL)
 		{
-			perror("execvp error");
-			exit(1);
+			char *path_copy = my_strdup(path);
+			char *dir = strtok(path_copy, ":");
+
+			while (dir != NULL)
+			{
+				if (execute_path(dir, args[0], args))
+				{
+					free(path_copy);
+					exit(0);
+				}
+				dir = strtok(NULL, ":");
+			}
+			free(path_copy);
 		}
+		printString("Command not found: ");
+		printString(args[0]);
+		printString("\n");
+		exit(1);
 	}
 	else
 	{
-		wait(NULL);
+		waitpid(child_pid, &status, 0);
 	}
 }
 
