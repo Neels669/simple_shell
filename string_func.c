@@ -92,13 +92,16 @@ char *my_strcpy(char *dest, const char *src)
 char *my_strcat(char *dest, const char *src)
 {
 	size_t dest_len = my_strlen(dest);
-	size_t i = 0;
+	size_t src_len = my_strlen(src);
+	size_t i;
 
-	while (src[i] != '\0')
+	if (dest_len + src_len >= BUFFER_SIZE)
+	{
+		return (NULL);
+	}
+	for (i = 0; i <= src_len; i++)
 	{
 		dest[dest_len + i] = src[i];
-		i++;
 	}
-	dest[dest_len + i] = '\0';
 	return (dest);
 }
