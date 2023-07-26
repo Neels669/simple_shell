@@ -24,13 +24,15 @@ void command_sign(int sign)
 */
 void _EOF(int len, char *buff)
 {
-	(void)buff;
+	if (buff != NULL)
+	{
+		free(buff);
+	}
 	if (len == -1)
 	{
 		if (isatty(STDIN_FILENO))
 		{
 			printString("\n");
-			free(buff);
 		}
 		exit(0);
 	}
