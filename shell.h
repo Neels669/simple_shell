@@ -19,6 +19,7 @@ int _putchar(char c);
 void printString(const char *str);
 void printUnsigned(unsigned int num);
 void printSigned(int num);
+void _isatty(void);
 
 int my_strcmp(const char *str1, const char *str2);
 size_t my_strlen(const char *str);

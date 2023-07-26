@@ -46,8 +46,6 @@ void _EOF(int len, char *buff)
  */
 bool my_execute(char **args)
 {
-	int i;
-
 	if (args[0] == NULL)
 	{
 		return (true);
@@ -56,7 +54,7 @@ bool my_execute(char **args)
 	{
 		if (args[1] == NULL)
 		{
-			if (chdir(getenv("HOME")) != 0)
+			if (chdir(my_getenv("HOME")) != 0)
 			{
 				perror("cd");
 			}
@@ -68,15 +66,6 @@ bool my_execute(char **args)
 				perror("cd");
 			}
 		}
-		return (true);
-	}
-	else if (my_strcmp(args[0], "echo") == 0)
-	{
-		for (i = 1; args[i] != NULL; i++)
-		{
-			printString(args[i]);
-		}
-		printString("\n");
 		return (true);
 	}
 	else if (my_strcmp(args[0], "env") == 0)
@@ -138,7 +127,6 @@ void execute_command(char **args)
 			}
 			free(path_copy);
 		}
-		printString("Command not found: ");
 		printString(args[0]);
 		printString("\n");
 		exit(1);
@@ -151,10 +139,12 @@ void execute_command(char **args)
 
 /**
  * main - Shell start
+ * @argc: argument count
+ * @argv: void
  *
  * Return: void
  */
-int main(void)
+int main(int argc, char *argv[])
 {
 	char *buffer = NULL;
 	char *args[MAX_ARGS];
@@ -163,11 +153,40 @@ int main(void)
 	char *token;
 	const char *delimiters = " \t\n";
 	int i, arg_index = 0;
+	(void)argv;
 
 	signal(SIGINT, command_sign);
+	if (argc > 1)
+	{
+		line_len = getline(&buffer, &buffer_size, stdin);
+
+		if (line_len == -1)
+			_EOF(line_len, buffer);
+		token = strtok(buffer, delimiters);
+
+		while (token != NULL)
+		{
+			if (my_strlen(token) > 0)
+			{
+				args[arg_index] = my_strdup(token);
+				arg_index++;
+			}
+			token = strtok(NULL, delimiters);
+		}
+		args[arg_index] = NULL;
+		execute_command(args);
+		for (i = 0; i < arg_index; i++)
+		{
+			free(args[i]);
+			args[i] = NULL;
+		}
+		free(buffer);
+		buffer = NULL;
+		exit(0);
+	}
 	while (1)
 	{
-		printString("($) ");
+		_isatty();
 		line_len = getline(&buffer, &buffer_size, stdin);
 		if (line_len == -1)
 			_EOF(line_len, buffer);

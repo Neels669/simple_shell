@@ -70,3 +70,14 @@ void printSigned(int num)
 	}
 	_putchar('0' + (num % 10));
 }
+
+/**
+  * _isatty - Check if the shell is running in interactive mode
+  *
+  * Return: print prompt
+  */
+void _isatty(void)
+{
+	if (isatty(STDIN_FILENO))
+		printString("($) ");
+}
