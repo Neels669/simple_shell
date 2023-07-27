@@ -87,6 +87,7 @@ void execute_command(char **args)
 	pid_t child_pid;
 	bool is_builtin;
 	int status;
+	const char *path;
 
 	if (args[0] == NULL)
 	{
@@ -99,7 +100,7 @@ void execute_command(char **args)
 	}
 	if (my_strcmp(args[0], "exit") == 0)
 	{
-		exit(0);
+		_EOF(-1, NULL);
 	}
 	child_pid = fork();
 	if (child_pid == -1)
@@ -109,7 +110,11 @@ void execute_command(char **args)
 	}
 	else if (child_pid == 0)
 	{
-		const char *path = my_getenv("PATH");
+		execvp(args[0], args);
+		perror("execvp failed");
+		exit(1);
+
+		path = my_getenv("PATH");
 
 		if (path != NULL)
 		{
@@ -151,7 +156,6 @@ int main(int argc, char *argv[])
 	size_t buffer_size = 0;
 	ssize_t line_len = 0;
 	char *token;
-	const char *delimiters = " \t\n";
 	int i, arg_index = 0;
 	(void)argv;
 
@@ -162,7 +166,8 @@ int main(int argc, char *argv[])
 
 		if (line_len == -1)
 			_EOF(line_len, buffer);
-		token = strtok(buffer, delimiters);
+		token = strtok(buffer, DELIMS);
+		add_array(token, args);
 
 		while (token != NULL)
 		{
@@ -171,7 +176,7 @@ int main(int argc, char *argv[])
 				args[arg_index] = my_strdup(token);
 				arg_index++;
 			}
-			token = strtok(NULL, delimiters);
+			token = strtok(NULL, DELIMS);
 		}
 		args[arg_index] = NULL;
 		execute_command(args);
@@ -190,7 +195,9 @@ int main(int argc, char *argv[])
 		line_len = getline(&buffer, &buffer_size, stdin);
 		if (line_len == -1)
 			_EOF(line_len, buffer);
-		token = strtok(buffer, delimiters);
+		token = strtok(buffer, DELIMS);
+		add_array(token, args);
+
 		while (token != NULL)
 		{
 			if (my_strlen(token) > 0)
@@ -198,7 +205,7 @@ int main(int argc, char *argv[])
 				args[arg_index] = my_strdup(token);
 				arg_index++;
 			}
-			token = strtok(NULL, delimiters);
+			token = strtok(NULL, DELIMS);
 		}
 		args[arg_index] = NULL;
 		if (my_strcmp(args[0], "exit") == 0)

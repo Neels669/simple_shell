@@ -14,6 +14,7 @@
 
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 64
+#define DELIMS " \t\n"
 
 int _putchar(char c);
 void printString(const char *str);
@@ -32,5 +33,20 @@ extern char **environ;
 bool execute_path(const char *path, const char *program, char **args);
 char *my_getenv(const char *name);
 void my_env(void);
+
+char *my_path(char *args);
+void add_array(char *token, char **command_array);
+
+/**
+ * struct shellcmd - structure for commands
+ * @type_command: command in user
+ * @return_funtion: return function.
+ */
+typedef struct shellcmd
+{
+	char *type_command;
+	char *return_funtion;
+
+} newcommand;
 
 #endif

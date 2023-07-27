@@ -41,3 +41,65 @@ void my_env(void)
 		env++;
 	}
 }
+
+/**
+ * my_path - Replace command with its corresponding path.
+ * @args: take argumment.
+ *
+ * Return: args
+ */
+char *my_path(char *args)
+{
+
+	int count = 0;
+
+	newcommand replace_cmd[] = {
+		{"ls", "/bin/ls"},
+		{"echo", "/bin/echo"},
+		{"cat", "/bin/cat"},
+		{"chmod", "/bin/chmod"},
+		{"mkdir", "/bin/mkdir"},
+		{"mv", "/bin/mv"},
+		{"pwd", "/bin/pwd"},
+		{"rm", "/bin/rm"},
+		{"rmdir", "/bin/rmdir"},
+		{NULL, NULL}};
+
+	while (replace_cmd[count].type_command)
+	{
+		if (my_strcmp(args, replace_cmd[count].type_command) == 0)
+		{
+			args = replace_cmd[count].return_funtion;
+			break;
+		}
+		count++;
+	}
+	return (args);
+}
+
+/**
+ * add_array - set the command type user made command_array
+ * @token: strtok's string delims.
+ * @command_array: the array we are inputting the values into
+ * Return: none
+ */
+void add_array(char *token, char **command_array)
+{
+
+	int cont = 0;
+
+	while (token)
+	{
+		if (cont == 0)
+		{
+			command_array[cont] = my_path(token);
+		}
+		else
+		{
+			command_array[cont] = my_path(token);
+		}
+		token = strtok(NULL, DELIMS);
+		cont++;
+	}
+	command_array[cont] = NULL;
+}
