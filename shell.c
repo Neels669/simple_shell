@@ -46,6 +46,7 @@ void _EOF(int len, char *buff)
  */
 bool my_execute(char **args)
 {
+	int i;
 	if (args[0] == NULL)
 	{
 		return (true);
@@ -68,7 +69,19 @@ bool my_execute(char **args)
 		}
 		return (true);
 	}
-	else if (my_strcmp(args[0], "env") == 0)
+	else if (my_strcmp(args[0], "echo") == 0)
+	{
+		for (i = 1; args[i] != NULL; i++)
+		{
+			printString(args[i]);
+			printString(" ");
+		}
+		printString("\n");
+		return (true);
+	}
+	return (false);
+
+	if (my_strcmp(args[0], "env") == 0)
 	{
 		my_env();
 		return (true);
