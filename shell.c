@@ -102,6 +102,12 @@ void execute_command(char **args)
 	{
 		_EOF(-1, NULL);
 	}
+	if (args[0][0] == '/')
+	{
+		execv(args[0], args);
+		perror("Failed");
+		exit(1);
+	}
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -123,10 +129,17 @@ void execute_command(char **args)
 
 			while (dir != NULL)
 			{
-				if (execute_path(dir, args[0], args))
+				char full_path[PATH_MAX];
+				my_strcpy(full_path, dir);
+				my_strcat(full_path, "/");
+				my_strcat(full_path, args[0]);
+
+				if (access(full_path, X_OK) == 0)
 				{
+					execv(full_path, args);
+					perror("failed");
 					free(path_copy);
-					exit(0);
+					exit(1);
 				}
 				dir = strtok(NULL, ":");
 			}
