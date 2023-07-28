@@ -79,13 +79,17 @@ bool my_execute(char **args)
 		printString("\n");
 		return (true);
 	}
-	return (false);
-
-	if (my_strcmp(args[0], "env") == 0)
+	else if(my_strcmp(args[0], "exit") == 0)
+	{
+		_EOF(-1, NULL);
+		return (true);
+	}
+	else if (my_strcmp(args[0], "env") == 0)
 	{
 		my_env();
 		return (true);
 	}
+
 	return (false);
 }
 
@@ -136,10 +140,6 @@ void execute_command(char **args)
 	}
 	else if (child_pid == 0)
 	{
-		execvp(args[0], args);
-		perror("execvp failed");
-		exit(1);
-
 		path = my_getenv("PATH");
 
 		if (path != NULL)
@@ -195,7 +195,6 @@ int main(int argc, char *argv[])
 
 	(void)argv;
 	(void)argc;
-	
 	signal(SIGINT, command_sign);
 	while (1)
 	{
@@ -234,7 +233,7 @@ int main(int argc, char *argv[])
 
 			execute_command(args);
 
-			for(i = 0; i < arg_index; i++)
+			for (i = 0; i < arg_index; i++)
 			{
 				free(args[i]);
 			}
@@ -248,5 +247,5 @@ int main(int argc, char *argv[])
 		free(buffer);
 		buffer = NULL;
 	}
-	return 0;
+	return (0);
 }
