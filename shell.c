@@ -204,6 +204,8 @@ int main(int argc, char *argv[])
 		if (line_len == -1)
 			_EOF(line_len, buffer);
 
+		replace(buffer, ';');
+
 		command_count = 0;
 
 		token = strtok(buffer, "|");
@@ -229,9 +231,10 @@ int main(int argc, char *argv[])
 				token = strtok(NULL, DELIMS);
 			}
 			args[arg_index] = NULL;
+
 			execute_command(args);
 
-			for (i = 0; i < arg_index; i++)
+			for(i = 0; i < arg_index; i++)
 			{
 				free(args[i]);
 			}

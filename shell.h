@@ -38,6 +38,7 @@ void my_env(void);
 
 char *my_path(char *args);
 void add_array(char *token, char **command_array);
+void replace(char *str, char ch);
 
 /**
  * struct shellcmd - structure for commands

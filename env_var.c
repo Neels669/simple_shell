@@ -54,7 +54,6 @@ char *my_path(char *args)
 	int count = 0;
 
 	newcommand replace_cmd[] = {
-		{"ls", "/bin/ls"},
 		{"echo", "/bin/echo"},
 		{"cat", "/bin/cat"},
 		{"chmod", "/bin/chmod"},
