@@ -54,14 +54,6 @@ char *my_path(char *args)
 	int count = 0;
 
 	newcommand replace_cmd[] = {
-		{"echo", "/bin/echo"},
-		{"cat", "/bin/cat"},
-		{"chmod", "/bin/chmod"},
-		{"mkdir", "/bin/mkdir"},
-		{"mv", "/bin/mv"},
-		{"pwd", "/bin/pwd"},
-		{"rm", "/bin/rm"},
-		{"rmdir", "/bin/rmdir"},
 		{NULL, NULL}};
 
 	while (replace_cmd[count].type_command)

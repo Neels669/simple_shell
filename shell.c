@@ -82,9 +82,14 @@ bool my_execute(char **args)
 	else if (my_strcmp(args[0], "env") == 0)
 	{
 		my_env();
+
+		for (i = 0; args[i] != NULL; i++)
+		{
+			free(args[i]);
+			args[i] = NULL;
+		}
 		return (true);
 	}
-
 	return (false);
 }
 
@@ -102,6 +107,7 @@ void execute_command(char **args)
 	const char *path;
 	int pipefd[2];
 	bool create_pipe(int pipefd[2]);
+	int i;
 
 	if (args[0] == NULL)
 	{
@@ -168,6 +174,11 @@ void execute_command(char **args)
 	{
 		waitpid(child_pid, &status, 0);
 	}
+	for (i = 0; args[i] != NULL; i++)
+	{
+		free(args[i]);
+		args[i] = NULL;
+	}
 }
 
 /**
@@ -231,6 +242,7 @@ int main(int argc, char *argv[])
 			for (i = 0; i < arg_index; i++)
 			{
 				free(args[i]);
+				args[i] = NULL;
 			}
 			arg_index = 0;
 		}
@@ -242,5 +254,17 @@ int main(int argc, char *argv[])
 		free(buffer);
 		buffer = NULL;
 	}
+
+	for (i = 0; i < command_count; i++)
+	{
+		free(commands[i]);
+		commands[i] = NULL;
+	}
+	for (i = 0; i < arg_index; i++)
+	{
+		free(args[i]);
+		args[i] = NULL;
+	}
+
 	return (0);
 }
