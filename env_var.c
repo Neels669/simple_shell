@@ -103,3 +103,23 @@ void add_array(char *token, char **command_array)
 	}
 	command_array[cont] = NULL;
 }
+
+bool create_pipe(int pipefd[2])
+{
+	char read_end[] = "/tmp/pipe_read_end";
+	char write_end[] = "/tmp/pipe_write_end";
+
+	if ((pipefd[0] = open(read_end, O_RDWR | O_CREAT | O_TRUNC, 0666)) == -1)
+	{
+		perror("open read end");
+		return false;
+	}
+	if ((pipefd[1] = open(write_end, O_RDWR | O_CREAT | O_TRUNC, 0666)) == -1)
+	{
+		perror("open write end");
+		close(pipefd[0]);
+		return false;
+	}
+	return true;
+}
+

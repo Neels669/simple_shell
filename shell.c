@@ -101,6 +101,8 @@ void execute_command(char **args)
 	bool is_builtin;
 	int status;
 	const char *path;
+	int pipefd[2];
+	bool create_pipe(int pipefd[2]);
 
 	if (args[0] == NULL)
 	{
@@ -115,12 +117,17 @@ void execute_command(char **args)
 	{
 		_EOF(-1, NULL);
 	}
+	if (!create_pipe(pipefd))
+	{
+		fprintf(stderr, "Error creating pipe.\n");
+	}
 	if (args[0][0] == '/')
 	{
 		execv(args[0], args);
 		perror("Failed");
 		exit(1);
 	}
+
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -183,69 +190,60 @@ int main(int argc, char *argv[])
 	ssize_t line_len = 0;
 	char *token;
 	int i, arg_index = 0;
+	char *commands[MAX_COMMANDS];
+	int cmd_idx, command_count;
+
 	(void)argv;
-
+	(void)argc;
+	
 	signal(SIGINT, command_sign);
-	if (argc > 1)
-	{
-		line_len = getline(&buffer, &buffer_size, stdin);
-
-		if (line_len == -1)
-			_EOF(line_len, buffer);
-		token = strtok(buffer, DELIMS);
-		add_array(token, args);
-
-		while (token != NULL)
-		{
-			if (my_strlen(token) > 0)
-			{
-				args[arg_index] = my_strdup(token);
-				arg_index++;
-			}
-			token = strtok(NULL, DELIMS);
-		}
-		args[arg_index] = NULL;
-		execute_command(args);
-		for (i = 0; i < arg_index; i++)
-		{
-			free(args[i]);
-			args[i] = NULL;
-		}
-		free(buffer);
-		buffer = NULL;
-		exit(0);
-	}
 	while (1)
 	{
 		_isatty();
 		line_len = getline(&buffer, &buffer_size, stdin);
 		if (line_len == -1)
 			_EOF(line_len, buffer);
-		token = strtok(buffer, DELIMS);
-		add_array(token, args);
 
+		command_count = 0;
+
+		token = strtok(buffer, "|");
 		while (token != NULL)
 		{
 			if (my_strlen(token) > 0)
 			{
-				args[arg_index] = my_strdup(token);
-				arg_index++;
+				commands[command_count] = my_strdup(token);
+				command_count++;
 			}
-			token = strtok(NULL, DELIMS);
+			token = strtok(NULL, "|");
 		}
-		args[arg_index] = NULL;
-		if (my_strcmp(args[0], "exit") == 0)
+		for (cmd_idx = 0; cmd_idx < command_count; cmd_idx++)
 		{
-			_EOF(-1, buffer);
+			token = strtok(commands[cmd_idx], DELIMS);
+			while (token != NULL)
+			{
+				if (my_strlen(token) > 0)
+				{
+					args[arg_index] = my_strdup(token);
+					arg_index++;
+				}
+				token = strtok(NULL, DELIMS);
+			}
+			args[arg_index] = NULL;
+			execute_command(args);
+
+			for (i = 0; i < arg_index; i++)
+			{
+				free(args[i]);
+			}
+			arg_index = 0;
 		}
-		execute_command(args);
-		for (i = 0; i < arg_index; i++)
+		for (i = 0; i < command_count; i++)
 		{
-			free(args[i]);
-			args[i] = NULL;
+			free(commands[i]);
+			commands[i] = NULL;
 		}
-		arg_index = 0;
 		free(buffer);
 		buffer = NULL;
 	}
+	return 0;
 }

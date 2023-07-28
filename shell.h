@@ -11,9 +11,11 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <fcntl.h>
 
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 64
+#define MAX_COMMANDS 100
 #define DELIMS " \t\n"
 
 int _putchar(char c);
