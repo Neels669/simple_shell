@@ -79,11 +79,6 @@ bool my_execute(char **args)
 		printString("\n");
 		return (true);
 	}
-	else if(my_strcmp(args[0], "exit") == 0)
-	{
-		_EOF(-1, NULL);
-		return (true);
-	}
 	else if (my_strcmp(args[0], "env") == 0)
 	{
 		my_env();
