@@ -47,6 +47,7 @@ void _EOF(int len, char *buff)
 bool my_execute(char **args)
 {
 	int i;
+	:
 	if (args[0] == NULL)
 	{
 		return (true);
@@ -86,6 +87,7 @@ bool my_execute(char **args)
 		for (i = 0; args[i] != NULL; i++)
 		{
 			free(args[i]);
+
 			args[i] = NULL;
 		}
 		return (true);

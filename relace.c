@@ -10,6 +10,7 @@
 void replace(char *str, char ch)
 {
 	int i;
+
 	for (i = 0; str[i] != '\0'; i++)
 	{
 		if (str[i] == ch)
